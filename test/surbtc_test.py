@@ -83,6 +83,14 @@ class SURBTCAuthTest(unittest.TestCase):
             MARKET_ID, SURBTC.ReportType.CANDLESTICK, start, end)
         self.assertIn('reports', reports.keys())
 
+    def test_report_average_prices(self):
+        report = self.client.report(MARKET_ID, SURBTC.ReportType.AVERAGE_PRICES)
+        self.assertIsInstance(report, models.AveragePrices)
+
+    def test_report_candlestick(self):
+        report = self.client.report(MARKET_ID, SURBTC.ReportType.CANDLESTICK)
+        self.assertIsInstance(report, models.Candlestick)
+
     def test_balance(self):
         balance = self.client.balance(SURBTC.Currency.BTC)
         self.assertIsInstance(balance, models.Balance)

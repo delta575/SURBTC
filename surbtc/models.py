@@ -399,3 +399,41 @@ class SimulateWithdrawal(
             fee=Amount.create_from_json(withdrawal['fee']),
             state=withdrawal['state']
         )
+
+class AveragePrices(
+    namedtuple('reports',[
+        'datetime',
+        'amount'
+    ])
+):
+
+    @classmethod
+    def create_from_json(cls, reports):
+
+        return cls(
+            datetime=reports[0],
+            amount=reports[1]
+        )
+
+class Candlestick(
+    namedtuple('reports',[
+        'datetime',
+        'open',
+        'high',
+        'low',
+        'close',
+        'volume'
+    ])
+):
+
+    @classmethod
+    def create_from_json(cls, reports):
+
+        return cls(
+            datetime=reports[0],
+            open=reports[1],
+            high=reports[2],
+            low=reports[3],
+            close=reports[4],
+            volume=reports[5],
+        )
