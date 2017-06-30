@@ -98,23 +98,28 @@ class SURBTCAuth(SURBTCPublic):
                report_type: _c.ReportType,
                start_at: datetime=None,
                end_at: datetime=None):
-        market_id = _c.Market.check(market_id)
-        report_type = _c.ReportType.check(report_type)
+        market_id = _c.Market.check(market_id).value
+        report_type = _c.ReportType.check(report_type).value
         if isinstance(start_at, datetime):
             start_at = int(start_at.timestamp())
         if isinstance(end_at, datetime):
             end_at = int(end_at.timestamp())
         params = {
-            'report_type': report_type.value,
+            'report_type': report_type,
             'from': start_at,
             'to': end_at,
         }
         url, path = self.url_path_for(_p.REPORTS,
-                                      path_arg=market_id.value)
+                                      path_arg=market_id)
         headers = self._sign_payload(method='GET', path=path, params=params)
         data = self.get(url, headers=headers, params=params)
-        # TODO: Report doesn't have a model
-        return data
+
+        if report_type == 'average_prices':
+            return [_m.AveragePrices.create_from_json(report) 
+                for report in data['reports']]
+        elif report_type == 'candlestick':
+            return [_m.Candlestick.create_from_json(report) 
+                for report in data['reports']]
 
     # BALANCES-----------------------------------------------------------------
     def balance(self, currency: _c.Currency):
